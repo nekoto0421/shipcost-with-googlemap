@@ -125,17 +125,21 @@ class GMSC_Plugin{
 
 	function googleMapOrderExec(){
 		global $wpdb;
+		//begin of precheck
+		if(trim($_POST["exectype"])!=0&&trim($_POST["exectype"])!=1){
+			echo json_encode(array('error'=>'處理失敗'));
+			exit();
+		}
+		if(empty($_POST["OrderList"])||preg_match("/[^0-9,]+/",$_POST["OrderList"])){
+			echo json_encode(array('error'=>'處理失敗'));
+			exit();
+		}
+		//end of precheck
+
 		$OrderList=trim($_POST["OrderList"]);
 		$exectype=trim($_POST["exectype"]);
-		
-		if($exectype!=0&&$exectype!=1){
-			echo json_encode(array('error'=>'處理失敗'));
-			exit();
-		}
-		if(empty($OrderList)||preg_match("/[^0-9,]+/",$OrderList)){
-			echo json_encode(array('error'=>'處理失敗'));
-			exit();
-		}
+
+
 		if($exectype==0){
 			$sql="UPDATE `{$wpdb->prefix}ship_custom_order` SET `execFlag`= 'T' WHERE `orderId`in(".$OrderList.") AND `execFlag`= 'F'";
 		}
@@ -156,33 +160,36 @@ class GMSC_Plugin{
 	function sendCustomShipOrder(){
 		include GMSC_DIR.'/SDK/ECPay.Payment.Integration.php';
 		global $wpdb;
+		//begin of precheck
+		if (!preg_match("/^[\x{4e00}-\x{9fa5}]+$/u",$_POST["userNm"])) {
+			echo ("<script>alert('購買失敗,請輸入中文姓名');</script>");
+			exit();
+		}
+
+		if(!is_numeric($_POST["price"])||$_POST["price"]==0){
+			echo ("<script>alert('購買失敗,金額錯誤');</script>");
+			exit();
+		}
+		else if(!varifyGMSCphone($_POST["userPhone"])){
+			echo ("<script>alert('購買失敗,電話格式錯誤');</script>");
+			exit();
+		}
+		else if(empty($_POST["beginpos"])||empty($_POST["endpos"])){
+			echo ("<script>alert('購買失敗,地址錯誤');</script>");
+			exit();
+		}
+		else if(empty($_POST["userNm"])){
+			echo ("<script>alert('購買失敗,姓名錯誤');</script>");
+			exit();
+		}
+		//end of precheck
 		$userNm=trim($_POST["userNm"]);
 		$userPhone=trim($_POST["userPhone"]);
 		$beginpos=trim($_POST["beginpos"]);
 		$endpos=trim($_POST["endpos"]);
 		$price=trim($_POST["price"]);
 
-		if (!preg_match("/^[\x{4e00}-\x{9fa5}]+$/u",$userNm)) {
-			echo ("<script>alert('購買失敗,請輸入中文姓名');</script>");
-			exit();
-		}
 
-		if(!is_numeric($price)||$price==0){
-			echo ("<script>alert('購買失敗,金額錯誤');</script>");
-			exit();
-		}
-		else if(!varifyGMSCphone($userPhone)){
-			echo ("<script>alert('購買失敗,電話格式錯誤');</script>");
-			exit();
-		}
-		else if(empty($beginpos)||empty($endpos)){
-			echo ("<script>alert('購買失敗,地址錯誤');</script>");
-			exit();
-		}
-		else if(empty($userNm)){
-			echo ("<script>alert('購買失敗,姓名錯誤');</script>");
-			exit();
-		}
 		$rent=ceil_dec((int)$price*0.0275,0);
 		if($rent<15){
 			$rent=15;
