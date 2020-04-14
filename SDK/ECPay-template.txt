@@ -1,0 +1,53 @@
+<?php
+/*
+Template Name: ECPay Template
+*/
+global $wpdb;
+require_once dirname(__FILE__).'/ECPay.Payment.Integration.php';
+define( "ECPay_MerchantID", get_option("plugin_google_map_ecpay_merchantID"));
+define( "ECPay_HashKey", get_option("plugin_google_map_ecpay_hashkey"));
+define( "ECPay_HashIV", get_option("plugin_google_map_ecpay_hashIV"));
+ 
+// 重新整理回傳參數。
+if(empty($_POST)){
+	return;
+}
+$arParameters = $_POST;
+foreach ($arParameters as $keys => $value) {
+    if ($keys != 'CheckMacValue') {
+        if ($keys == 'PaymentType') {
+            $value = str_replace('_CVS', '', $value);
+            $value = str_replace('_BARCODE', '', $value);
+            $value = str_replace('_CreditCard', '', $value);
+        }
+        if ($keys == 'PeriodType') {
+            $value = str_replace('Y', 'Year', $value);
+            $value = str_replace('M', 'Month', $value);
+            $value = str_replace('D', 'Day', $value);
+        }
+        $arFeedback[$keys] = $value;
+    }
+}
+// 計算出 CheckMacValue
+//$CheckMacValue = ECPay_CheckMacValue::generate( $arParameters, ECPay_HashKey, ECPay_HashIV );
+// 必須要支付成功並且驗證碼正確
+if(empty($_POST["RtnCode"])||!empty($_POST["MerchantTradeNo"])||!empty($_POST["TradeAmt"])){
+    echo '1|OK';
+    return;
+}
+
+if ( $_POST['RtnCode'] =='1' && $CheckMacValue == $_POST['CheckMacValue'] ){
+    $MerchantTradeNo=trim($_POST["MerchantTradeNo"]);
+    $RtnCode=trim($_POST["RtnCode"]);
+    $TradeAmt=trim($_POST["TradeAmt"]);
+    $CheckMacValue=trim($_POST["CheckMacValue"]);
+    $sql="UPDATE {$wpdb->prefix}ship_custom_order SET `payFlag`= 'T' WHERE MerchantTradeNo = '".$MerchantTradeNo."'";
+    $wpdb->query($sql);
+}
+else{
+    $sql="UPDATE {$wpdb->prefix}ship_custom_order SET `payFlag`= 'F' WHERE MerchantTradeNo = '".$MerchantTradeNo."'";
+    $wpdb->query($sql);
+}
+// 接收到資訊回應綠界
+echo '1|OK';
+?>

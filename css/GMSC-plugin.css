@@ -1,0 +1,50 @@
+/* Always set the map height explicitly to define the size of the div
+* element that contains the map. */
+.introjs-tooltip {
+	font-weight: bold;
+	letter-spacing:1px;
+	font-family:微軟正黑體;
+	font-size:1.3em;
+}
+#map {
+	height: 500px;
+}
+
+.oriplaceinput{
+	width:40% !important;
+	min-width:300px;
+	display:inline-block !important;
+}
+
+.destninput{
+	width:40% !important;
+	min-width:300px;
+	display:inline-block !important;
+}
+.custom-marker-alt{
+	color:#CC0000;
+	font-size:1.5em;
+	margin-right:10px;
+	animation-duration: 4s;
+}
+.shadow{
+	text-shadow: 0px 0px 10px #eee, 0px 0px 10px #eee, 0px 0px 10px #eeee, 0px 0px 10px #eee, 0px 0px 10px #eee, 0px 0px 10px #eee, 0px 0px 10px #eee;
+}
+.resultdiv{
+	font-size:1.5em;
+	margin-top:40px;
+	margin-left:35%;
+}
+.phonespan{
+	margin-left:30px;
+}
+@media screen and (max-width: 600px){
+	.resultdiv{
+		font-size:1.5em;
+		margin-top:40px;
+		margin-left:0%;
+	}
+	.phonespan{
+		margin-left:0px;
+	}
+}
