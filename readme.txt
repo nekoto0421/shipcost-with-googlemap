@@ -2,6 +2,7 @@
 License: GPLv2 or later
 
 == Description ==
+ver1.0
 推薦使用Elementor配合短代碼的方式使用本外掛
 短代碼:[GMSC-plugin type='main_page']
 
