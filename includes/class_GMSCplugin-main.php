@@ -136,8 +136,8 @@ class GMSC_Plugin{
 		}
 		//end of precheck
 
-		$OrderList=trim($_POST["OrderList"]);
-		$exectype=trim($_POST["exectype"]);
+		$OrderList=sanitize_text_field(trim($_POST["OrderList"]));
+		$exectype=sanitize_text_field(trim($_POST["exectype"]));
 
 
 		if($exectype==0){
@@ -183,11 +183,11 @@ class GMSC_Plugin{
 			exit();
 		}
 		//end of precheck
-		$userNm=trim($_POST["userNm"]);
-		$userPhone=trim($_POST["userPhone"]);
-		$beginpos=trim($_POST["beginpos"]);
-		$endpos=trim($_POST["endpos"]);
-		$price=trim($_POST["price"]);
+		$userNm=sanitize_text_field(trim($_POST["userNm"]));
+		$userPhone=sanitize_text_field(trim($_POST["userPhone"]));
+		$beginpos=sanitize_text_field(trim($_POST["beginpos"]));
+		$endpos=sanitize_text_field(trim($_POST["endpos"]));
+		$price=sanitize_text_field(trim($_POST["price"]));
 
 
 		$rent=ceil_dec((int)$price*0.0275,0);

@@ -10,6 +10,7 @@ define( "ECPay_HashIV", get_option("plugin_google_map_ecpay_hashIV"));
  
 // 重新整理回傳參數。
 if(empty($_POST)){
+    echo '1|OK';
 	return;
 }
 $arParameters = $_POST;
@@ -37,10 +38,10 @@ if(empty($_POST["RtnCode"])||!empty($_POST["MerchantTradeNo"])||!empty($_POST["T
 }
 
 if ( $_POST['RtnCode'] =='1' && $CheckMacValue == $_POST['CheckMacValue'] ){
-    $MerchantTradeNo=trim($_POST["MerchantTradeNo"]);
-    $RtnCode=trim($_POST["RtnCode"]);
-    $TradeAmt=trim($_POST["TradeAmt"]);
-    $CheckMacValue=trim($_POST["CheckMacValue"]);
+    $MerchantTradeNo=sanitize_text_field(trim($_POST["MerchantTradeNo"]));
+    $RtnCode=sanitize_text_field(trim($_POST["RtnCode"]));
+    $TradeAmt=sanitize_text_field(trim($_POST["TradeAmt"]));
+    $CheckMacValue=sanitize_text_field(trim($_POST["CheckMacValue"]));
     $sql="UPDATE {$wpdb->prefix}ship_custom_order SET `payFlag`= 'T' WHERE MerchantTradeNo = '".$MerchantTradeNo."'";
     $wpdb->query($sql);
 }
